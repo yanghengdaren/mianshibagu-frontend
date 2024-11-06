@@ -8,7 +8,7 @@ export async function uploadFileUsingPost(
   params: API.uploadFileUsingPOSTParams,
   body: {},
   file?: File,
-  options?: { [key: string]: any }
+  options?: { [key: string]: any },
 ) {
   const formData = new FormData();
 
@@ -38,7 +38,9 @@ export async function uploadFileUsingPost(
       ...params,
     },
     data: formData,
-    requestType: "form",
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
     ...(options || {}),
   });
 }
