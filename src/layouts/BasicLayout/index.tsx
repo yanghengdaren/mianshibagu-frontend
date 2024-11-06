@@ -6,16 +6,18 @@ import {
 } from "@ant-design/icons";
 import { ProLayout } from "@ant-design/pro-components";
 import { Dropdown, Input } from "antd";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import GlobalFooter from "@/components/GlobalFooter";
 import "./index.css";
-import menus from "../../../config/menu";
-import {listQuestionBankVoByPageUsingPost} from "@/api/questionBankController";
-import {useSelector} from "react-redux";
-import {RootState} from "@/stores";
+import { menus } from "../../../config/menu";
+import { useSelector } from "react-redux";
+import { RootState } from "@/stores";
+import getAccessibleMenus from "@/access/menuAccess";
+import MdEditor from "@/components/MdEditor";
+import MdViewer from "@/components/MdViewer";
 
 /**
  * 搜索条
@@ -62,9 +64,9 @@ interface Props {
 export default function BasicLayout({ children }: Props) {
   const pathname = usePathname();
 
-    const loginUser = useSelector((state: RootState) => state.loginUser);
+  const loginUser = useSelector((state: RootState) => state.loginUser);
 
-    return (
+  return (
     <div
       id="basicLayout"
       style={{
@@ -136,7 +138,7 @@ export default function BasicLayout({ children }: Props) {
         onMenuHeaderClick={(e) => console.log(e)}
         //定义菜单
         menuDataRender={() => {
-          return menus;
+          return getAccessibleMenus(loginUser, menus);
         }}
         //定义菜单项渲染
         menuItemRender={(item, dom) => (

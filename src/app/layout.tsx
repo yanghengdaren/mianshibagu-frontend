@@ -3,10 +3,12 @@ import { AntdRegistry } from "@ant-design/nextjs-registry";
 import "./globals.css";
 import BasicLayout from "@/layouts/BasicLayout";
 import React, { useCallback, useEffect } from "react";
-import {Provider, useDispatch} from "react-redux";
-import store, {AppDispatch} from "@/stores";
-import {getLoginUserUsingGet} from "@/api/userController";
-import {setLoginUser} from "@/stores/loginUser";
+import { Provider, useDispatch } from "react-redux";
+import store, { AppDispatch } from "@/stores";
+import { getLoginUserUsingGet } from "@/api/userController";
+import { setLoginUser } from "@/stores/loginUser";
+import AccessLayout from "@/access/AccessLayout";
+import ACCESS_ENUM from "@/access/accessEnum";
 
 /**
  * 执行初始化逻辑的布局（多封装一层）
@@ -22,12 +24,17 @@ const InitLayout: React.FC<
   /**
    * 初始化全局用户状态
    */
-  const doInitLoginUser = useCallback(async() => {
-  //获取用户信息
+  const doInitLoginUser = useCallback(async () => {
+    //获取用户信息
     const res = await getLoginUserUsingGet();
-    if(res.data){
+    if (res.data) {
       // 更新全局用户状态
-    }else{
+    } else {
+      // // todo 测试代码，实际可删除
+      // setTimeout(() => {
+      //   const testUser = { userName: "测试登录", id: 1 ,userRole: ACCESS_ENUM.ADMIN };
+      //   dispatch(setLoginUser(testUser));
+      // }, 3000);
     }
   }, []);
 
@@ -50,7 +57,9 @@ export default function RootLayout({
         <AntdRegistry>
           <Provider store={store}>
             <InitLayout>
-              <BasicLayout>{children}</BasicLayout>
+              <BasicLayout>
+                <AccessLayout>{children}</AccessLayout>
+              </BasicLayout>
             </InitLayout>
           </Provider>
         </AntdRegistry>
