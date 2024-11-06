@@ -14,6 +14,8 @@ import GlobalFooter from "@/components/GlobalFooter";
 import "./index.css";
 import menus from "../../../config/menu";
 import {listQuestionBankVoByPageUsingPost} from "@/api/questionBankController";
+import {useSelector} from "react-redux";
+import {RootState} from "@/stores";
 
 /**
  * 搜索条
@@ -60,11 +62,9 @@ interface Props {
 export default function BasicLayout({ children }: Props) {
   const pathname = usePathname();
 
-    listQuestionBankVoByPageUsingPost({}).then((res) => {
-        console.log(res);
-    });
+    const loginUser = useSelector((state: RootState) => state.loginUser);
 
-  return (
+    return (
     <div
       id="basicLayout"
       style={{
@@ -87,9 +87,9 @@ export default function BasicLayout({ children }: Props) {
           pathname,
         }}
         avatarProps={{
-          src: "https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg",
+          src: loginUser.userAvatar || "/assets/logo.png",
           size: "small",
-          title: "八股",
+          title: loginUser.userName || "八股",
           render: (props, dom) => {
             return (
               <Dropdown
