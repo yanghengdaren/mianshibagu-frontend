@@ -8,7 +8,7 @@ import store, { AppDispatch } from "@/stores";
 import { getLoginUserUsingGet } from "@/api/userController";
 import { setLoginUser } from "@/stores/loginUser";
 import AccessLayout from "@/access/AccessLayout";
-import ACCESS_ENUM from "@/access/accessEnum";
+import LoginUserVO = API.LoginUserVO;
 
 /**
  * 执行初始化逻辑的布局（多封装一层）
@@ -29,6 +29,7 @@ const InitLayout: React.FC<
     const res = await getLoginUserUsingGet();
     if (res.data) {
       // 更新全局用户状态
+      dispatch(setLoginUser(res.data as LoginUserVO));
     } else {
       // // todo 测试代码，实际可删除
       // setTimeout(() => {
