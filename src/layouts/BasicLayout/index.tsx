@@ -19,38 +19,9 @@ import getAccessibleMenus from "@/access/menuAccess";
 import { userLogoutUsingPost } from "@/api/userController";
 import { DEFAULT_USER } from "@/constants/user";
 import { setLoginUser } from "@/stores/loginUser";
+import SearchInput from "@/layouts/BasicLayout/components/SearchInput";
 
-/**
- * 搜索条
- * @constructor
- */
-const SearchInput = () => {
-  return (
-    <div
-      key="SearchOutlined"
-      aria-hidden
-      style={{
-        display: "flex",
-        alignItems: "center",
-        marginInlineEnd: 24,
-      }}
-      onMouseDown={(e) => {
-        e.stopPropagation();
-        e.preventDefault();
-      }}
-    >
-      <Input
-        style={{
-          borderRadius: 4,
-          marginInlineEnd: 12,
-        }}
-        prefix={<SearchOutlined />}
-        placeholder="搜索题目"
-        variant="borderless"
-      />
-    </div>
-  );
-};
+
 
 interface Props {
   children: React.ReactNode;
@@ -109,6 +80,7 @@ export default function BasicLayout({ children }: Props) {
         avatarProps={{
           src: loginUser.userAvatar || "/assets/logo.png",
           size: "small",
+
           title: loginUser.userName || "八股",
           render: (props, dom) => {
             return loginUser.id ? (
@@ -139,8 +111,9 @@ export default function BasicLayout({ children }: Props) {
         }}
         actionsRender={(props) => {
           if (props.isMobile) return [];
+          const isQuestionsPage = pathname.includes('/questions')
           return [
-            <SearchInput key={"search"} />,
+            !isQuestionsPage&&<SearchInput key={"search"} />,
             <a
               key={"github"}
               href="https://github.com/yanghengdaren/mianshibagu-frontend"
@@ -148,7 +121,7 @@ export default function BasicLayout({ children }: Props) {
             >
               <GithubFilled key="GithubFilled" />,
             </a>,
-          ];
+          ].filter(Boolean);
         }}
         headerTitleRender={(logo, title, _) => {
           return (
