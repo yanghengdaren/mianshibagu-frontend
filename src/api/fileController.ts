@@ -8,7 +8,7 @@ export async function uploadFileUsingPost(
   params: API.uploadFileUsingPOSTParams,
   body: {},
   file?: File,
-  options?: { [key: string]: any },
+  options?: { [key: string]: any }
 ) {
   const formData = new FormData();
 
@@ -39,7 +39,7 @@ export async function uploadFileUsingPost(
     },
     data: formData,
     headers: {
-      "Content-Type": "multipart/form-data",
+      "Content-Type": "multipart/form-data", // 设置 Content-Type 为表单数据
     },
     ...(options || {}),
   });
