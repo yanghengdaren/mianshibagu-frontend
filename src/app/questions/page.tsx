@@ -1,7 +1,10 @@
 "use server";
 import Title from "antd/es/typography/Title";
 import "./index.css";
-import { listQuestionVoByPageUsingPost } from "@/api/questionController";
+import {
+  listQuestionVoByPageUsingPost,
+  searchQuestionVoByPageUsingPost,
+} from "@/api/questionController";
 import PageQuestionVO_ = API.PageQuestionVO_;
 import QuestionTable from "@/components/QuestionTable";
 import QuestionVO = API.QuestionVO;
@@ -21,11 +24,11 @@ export default async function QuestionsPage({
   let questionList: QuestionVO[] = [];
   let total = 0;
   try {
-  //todo 根据标签搜索题目
-    const questionRes = await listQuestionVoByPageUsingPost({
-      title: searchText,
+    //
+    const questionRes = await searchQuestionVoByPageUsingPost({
+      searchText,
       pageSize: 12,
-      sortField: "createTime",
+      sortField: "_score",
       sortOrder: "descend",
     });
     questionList = (questionRes.data as PageQuestionVO_).records ?? [];

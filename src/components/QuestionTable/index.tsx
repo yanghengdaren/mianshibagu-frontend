@@ -1,24 +1,20 @@
 "use client";
 
-import {
-  listQuestionByPageUsingPost,
-  listQuestionVoByPageUsingPost,
-} from "@/api/questionController";
+import { searchQuestionVoByPageUsingPost } from "@/api/questionController";
 import type { ActionType, ProColumns } from "@ant-design/pro-components";
 import { ProTable } from "@ant-design/pro-components";
 import React, { useRef, useState } from "react";
-import PageQuestion_ = API.PageQuestion_;
 import TagList from "@/components/TagList";
-import MdEditor from "@/components/MdEditor";
 import { TablePaginationConfig } from "antd";
 import Link from "next/link";
+import PageQuestion_ = API.PageQuestion_;
 
 interface Props {
   //默认值用于展示服务端渲染的数据
   defaultQuestionList?: API.QuestionVO[];
   defaultTotal?: number;
   //默认搜索条件
-  defaultSearchParams?:API.QuestionQueryRequest;
+  defaultSearchParams?: API.QuestionQueryRequest;
 }
 
 /**
@@ -27,7 +23,7 @@ interface Props {
  * @constructor
  */
 const QuestionTable: React.FC<Props> = (props) => {
-  const { defaultQuestionList, defaultTotal ,defaultSearchParams={}} = props;
+  const { defaultQuestionList, defaultTotal, defaultSearchParams = {} } = props;
   const actionRef = useRef<ActionType>();
   //题目列表
   const [questionList, setQuestionList] = useState<API.QuestionVO[]>(
@@ -43,11 +39,18 @@ const QuestionTable: React.FC<Props> = (props) => {
    */
   const columns: ProColumns<API.QuestionVO>[] = [
     {
-      title: "标题",
+      title: "搜索",
+      dataIndex: "searchText",
+      valueType: "text",
+      hideInTable: true,
+    },
+    {
+      title: "题目",
       dataIndex: "title",
       valueType: "text",
+      hideInSearch:true,
       render: (_, record) => {
-        return <Link href={`/questions/${record.id}`}>{record.title}</Link>
+        return <Link href={`/questions/${record.id}`}>{record.title}</Link>;
       },
     },
     {
@@ -72,9 +75,8 @@ const QuestionTable: React.FC<Props> = (props) => {
           labelWidth: "auto",
         }}
         form={{
-          initialValues:defaultSearchParams,
+          initialValues: defaultSearchParams,
         }}
-
         dataSource={questionList}
         pagination={
           {
@@ -89,7 +91,7 @@ const QuestionTable: React.FC<Props> = (props) => {
           if (init) {
             setInit(false);
             if (defaultQuestionList && defaultTotal) {
-              return{
+              return {
                 data: defaultQuestionList,
                 total: defaultTotal,
               };
@@ -99,9 +101,10 @@ const QuestionTable: React.FC<Props> = (props) => {
           const sortField = Object.keys(sort)?.[0] || "createTime";
           const sortOrder = sort?.[sortField] || "descend";
 
-          const { data, code } = (await listQuestionVoByPageUsingPost({
+          const { data, code } = (await searchQuestionVoByPageUsingPost({
             ...params,
-            sortField,
+            sortField: '_score',
+            tags: params.tagsList,
             sortOrder,
             ...filter,
           } as API.QuestionQueryRequest)) as unknown as {
@@ -112,6 +115,9 @@ const QuestionTable: React.FC<Props> = (props) => {
           //更新结果
           const newData = data?.records || [];
           const newTotal = data?.total || 0;
+
+          console.log("params:", params);
+          console.log("filter:", filter);
           //更新状态
           setQuestionList(newData);
           setTotal(newTotal);
